@@ -19,15 +19,19 @@ import Chatbot from './components/Chatbot'
 import zeldaImg from "./assets/Zelda.jpg"
 import marioImg from "./assets/Mario_Odyssey.jpg"
 import ninjaImg from "./assets/Ninja_Gaiden.jpg"
-
+import holeImg from "./assets/Hole.jpg"
+import slitherImg from "./assets/slither.jpg"
+import agarioImg from "./assets/agario.jpg"
 
 import './App.css'
 
 const juegos = [
-  { id: 1, nombre: "The Legend of Zelda", genero: "Exploración", imagen: zeldaImg, desc: "Aventura épica en un mundo abierto" },
-  { id: 2, nombre: "Super Mario Odyssey", genero: "Plataformas", imagen: marioImg, desc: "Plataformas 3D llenas de diversión" },
-  { id: 3, nombre: "Ninja Gaiden", genero: "Acción", imagen: ninjaImg, desc: "Combate ninja intenso" },
-  
+  // { id: 1, nombre: "The Legend of Zelda", genero: "Exploración", imagen: zeldaImg, desc: "Aventura épica en un mundo abierto" },
+  // { id: 2, nombre: "Super Mario Odyssey", genero: "Plataformas", imagen: marioImg, desc: "Plataformas 3D llenas de diversión" },
+  // { id: 3, nombre: "Ninja Gaiden", genero: "Acción", imagen: ninjaImg, desc: "Combate ninja intenso" },
+  { id: 4, nombre: "Slither.io", imagen: slitherImg, desc: "¡Come y crece!", url: "https://slither.io/" },
+  { id: 5, nombre: "Agar.io", imagen: agarioImg, desc: "¡Devora a los demás!", url: "https://agar.io/" },
+  { id: 6, nombre: "Hole.io", imagen: holeImg, desc: "¡Trágate la ciudad!", url: "https://www.crazygames.com/game/hole-io" },
 ]
 
 export default function App() {
@@ -51,11 +55,11 @@ export default function App() {
       },
       { threshold: 0.5 }
     )
-    
+
     tarjetaRef.current.forEach((tarjeta) => {
       if (tarjeta) observer.observe(tarjeta)
     })
-    
+
     return () => observer.disconnect()
   }, [])
 
@@ -115,7 +119,7 @@ export default function App() {
             1024: { slidesPerView: 3 },
           }}
           className="juegos-swiper"
-        > 
+        >
           {juegos.map((juego, index) => (
             <SwiperSlide key={juego.id}>
               <div
@@ -128,6 +132,19 @@ export default function App() {
                 <div className='tarjeta-info'>
                   <h3>{juego.nombre}</h3>
                   <p>{juego.desc}</p>
+
+                  {/* 🔥 BOTÓN JUGAR */}
+                  {juego.url && (
+                    <a
+                      href={juego.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-jugar"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      🎮 Jugar
+                    </a>
+                  )}
                 </div>
               </div>
             </SwiperSlide>
@@ -149,7 +166,7 @@ export default function App() {
           <FaCalendar />
           <span>Journey</span>
         </button>
-        <button className='nav-item'>  
+        <button className='nav-item'>
           <FaUserCircle />
           <span>Profile</span>
         </button>
@@ -160,7 +177,7 @@ export default function App() {
       </nav>
 
       {/* Modal de Login */}
-      <LoginModal 
+      <LoginModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
         onLogin={(userData) => {
@@ -170,7 +187,7 @@ export default function App() {
       />
 
       {/* Chatbot */}
-      <Chatbot 
+      <Chatbot
         isOpen={isChatbotOpen}
         onClose={() => setIsChatbotOpen(false)}
         userId={user?.id || 'anonimo'}
