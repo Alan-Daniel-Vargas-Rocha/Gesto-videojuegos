@@ -3,13 +3,12 @@ import { FaBars, FaSearch, FaUser, FaHome, FaCompass, FaCalendar, FaUserCircle, 
 
 // Importamos Swiper
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation, Pagination, EffectCoverflow } from 'swiper/modules'
+import { Navigation, Pagination } from 'swiper/modules'
 
 // Estilos de Swiper
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
-import 'swiper/css/effect-coverflow'
 
 // Importamos componentes
 import LoginModal from './components/LoginModal'
@@ -26,12 +25,10 @@ import agarioImg from "./assets/agario.jpg"
 import './App.css'
 
 const juegos = [
-  // { id: 1, nombre: "The Legend of Zelda", genero: "Exploración", imagen: zeldaImg, desc: "Aventura épica en un mundo abierto" },
-  // { id: 2, nombre: "Super Mario Odyssey", genero: "Plataformas", imagen: marioImg, desc: "Plataformas 3D llenas de diversión" },
-  // { id: 3, nombre: "Ninja Gaiden", genero: "Acción", imagen: ninjaImg, desc: "Combate ninja intenso" },
-  { id: 4, nombre: "Slither.io", imagen: slitherImg, desc: "¡Come y crece!", url: "https://slither.io/" },
-  { id: 5, nombre: "Agar.io", imagen: agarioImg, desc: "¡Devora a los demás!", url: "https://agar.io/" },
-  { id: 6, nombre: "Hole.io", imagen: holeImg, desc: "¡Trágate la ciudad!", url: "https://www.crazygames.com/game/hole-io" },
+  { id: 1, nombre: "Slither.io", imagen: slitherImg, desc: "¡Come y crece!", url: "https://slither.io/" },
+  { id: 2, nombre: "Agar.io", imagen: agarioImg, desc: "¡Devora a los demás!", url: "https://agar.io/" },
+  { id: 3, nombre: "Hole.io", imagen: holeImg, desc: "¡Trágate la ciudad!", url: "https://www.crazygames.com/game/hole-io" },
+  // Agrega más juegos aquí
 ]
 
 export default function App() {
@@ -39,7 +36,12 @@ export default function App() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
   const [user, setUser] = useState(null)
   const [isChatbotOpen, setIsChatbotOpen] = useState(false)
+  const [busqueda, setBusqueda] = useState('')
   const tarjetaRef = useRef([])
+
+  const juegosFiltrados = juegos.filter(juego =>
+    juego.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  )
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -61,7 +63,7 @@ export default function App() {
     })
 
     return () => observer.disconnect()
-  }, [])
+  }, [juegosFiltrados])
 
   const logout = () => {
     setUser(null)
@@ -76,7 +78,13 @@ export default function App() {
         </button>
         <div className='search-container'>
           <FaSearch className='search-icon' />
-          <input type="text" placeholder='Buscar juegos...' className='search-input' />
+          <input
+            type="text"
+            placeholder='Buscar juegos...'
+            className='search-input'
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+          />
         </div>
 
         {user ? (
@@ -95,19 +103,11 @@ export default function App() {
         )}
       </header>
 
-      {/* Contenido principal Deslizable */}
+      {/* Contenido principal */}
       <main className="catalogo">
         <h2 className='section-title'>🎮 Juegos Destacados</h2>
         <Swiper
-          modules={[Navigation, Pagination, EffectCoverflow]}
-          effect="coverflow"
-          coverflowEffect={{
-            rotate: 0,
-            stretch: 0,
-            depth: 100,
-            modifier: 1,
-            slideShadows: false,
-          }}
+          modules={[Navigation, Pagination]}
           slidesPerView={1.2}
           spaceBetween={20}
           centeredSlides={true}
@@ -120,7 +120,7 @@ export default function App() {
           }}
           className="juegos-swiper"
         >
-          {juegos.map((juego, index) => (
+          {juegosFiltrados.map((juego, index) => (
             <SwiperSlide key={juego.id}>
               <div
                 className='tarjeta-juego'
@@ -132,8 +132,6 @@ export default function App() {
                 <div className='tarjeta-info'>
                   <h3>{juego.nombre}</h3>
                   <p>{juego.desc}</p>
-
-                  {/* 🔥 BOTÓN JUGAR */}
                   {juego.url && (
                     <a
                       href={juego.url}
@@ -154,27 +152,63 @@ export default function App() {
 
       {/* Menú inferior */}
       <nav className='bottom-nav'>
-        <button className='nav-item'>
+        <button className='nav-item' onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <FaHome />
           <span>Home</span>
         </button>
-        <button className='nav-item'>
-          <FaCompass />
+        <button className='nav-item' onClick={() => {
+          const searchInput = document.querySelector('.search-input');
+          if (searchInput) searchInput.focus();
+        }}>
+          <FaSearch />
           <span>Search</span>
         </button>
-        <button className='nav-item'>
-          <FaCalendar />
-          <span>Journey</span>
-        </button>
-        <button className='nav-item'>
+        <button className='nav-item' onClick={() => {
+          if (user) {
+            alert(`👤 Usuario: ${user.nombre}\n📧 Email: ${user.email || 'No disponible'}`);
+          } else {
+            setIsLoginModalOpen(true);
+          }
+        }}>
           <FaUserCircle />
           <span>Profile</span>
+        </button>
+        <button className='nav-item' onClick={() => alert('🎮 Próximamente: juegos .io')}>
+          <FaGamepad />
+          <span>Juegos</span>
         </button>
         <button className='nav-item' onClick={() => setIsChatbotOpen(true)}>
           <FaRobot />
           <span>IA</span>
         </button>
       </nav>
+
+      {/* Menú lateral */}
+      {menuAbierto && (
+        <div className="menu-lateral" onClick={() => setMenuAbierto(false)}>
+          <div className="menu-contenido" onClick={(e) => e.stopPropagation()}>
+            <button className="menu-cerrar" onClick={() => setMenuAbierto(false)}>✕</button>
+            <h3>Menú</h3>
+            <ul>
+              <li onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setMenuAbierto(false); }}>
+                <FaHome /> Home
+              </li>
+              <li onClick={() => { document.querySelector('.search-input')?.focus(); setMenuAbierto(false); }}>
+                <FaSearch /> Buscar
+              </li>
+              <li onClick={() => { setIsLoginModalOpen(true); setMenuAbierto(false); }}>
+                <FaUserCircle /> Perfil
+              </li>
+              <li onClick={() => { alert('🎮 Próximamente: juegos .io'); setMenuAbierto(false); }}>
+                <FaGamepad /> Juegos
+              </li>
+              <li onClick={() => { setIsChatbotOpen(true); setMenuAbierto(false); }}>
+                <FaRobot /> IA
+              </li>
+            </ul>
+          </div>
+        </div>
+      )}
 
       {/* Modal de Login */}
       <LoginModal
