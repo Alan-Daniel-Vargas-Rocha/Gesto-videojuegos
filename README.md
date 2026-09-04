@@ -30,37 +30,6 @@
 
 ---
 
-## 📂 **Estructura del proyecto**
-Gestor-videojuegos/
-├── public/
-│ └── favicon.svg
-├── src/
-│ ├── assets/
-│ │ ├── Zelda.jpg
-│ │ ├── Mario_Odyssey.jpg
-│ │ ├── Ninja_Gaiden.jpg
-│ │ ├── Hole.jpg
-│ │ ├── slither.jpg
-│ │ └── agario.jpg
-│ ├── components/
-│ │ ├── LoginModal.jsx
-│ │ ├── LoginModal.css
-│ │ ├── Chatbot.jsx
-│ │ ├── Chatbot.css
-│ │ └── AuthContext.jsx
-│ ├── services/
-│ │ └── authService.js
-│ ├── App.jsx
-│ ├── App.css
-│ ├── main.jsx
-│ └── index.css
-├── index.html
-├── package.json
-├── vite.config.js
-└── README.md
-
----
-
 ## 🚀 **Instalación y uso**
 
 ### **1. Clonar el repositorio**
